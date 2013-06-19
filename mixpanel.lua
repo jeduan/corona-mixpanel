@@ -175,9 +175,11 @@ end
 
 local function postRequestListener( e )
 	if e.isError then
-		_log('error while sending data to mixpanel', error)
+		_log('error while sending data to mixpanel ', error)
 	end
-	_log('event', e)
+	if e.status ~= 200 then
+		_log('error while sending data to mixpanel ')
+	end
 end
 
 local function _postRequest( endpoint, body )

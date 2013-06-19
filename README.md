@@ -25,8 +25,7 @@ You need to ensure these properties exist in `build.settings`
 ```
 
 
-Super properties
-------
+### Super properties
 
 It's very common to have certain properties that you want to include with each event you send. Generally, these are things you know about the user rather than about a specific event—for example, the user's age, gender, or source.
 
@@ -35,7 +34,7 @@ To make things easier, you can register these properties as super properties. If
 ```lua
 local mixpanel = require 'mixpanel'
 mixpanel.registerSuperProperties({
-  ['Paid User'] = true
+  ['User Type'] = 'Paid'
 })
 ```
 
