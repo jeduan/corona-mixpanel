@@ -194,7 +194,7 @@ local function _postRequest( endpoint, body )
 end
 
 local function _postEvent(event)
-	local postBody = 'ip=1&data=' .. _postRequest(data)
+	local postBody = 'ip=1&data=' .. encodeApiData(data)
 	_postRequest( '/track/', postBody )
 end
 
