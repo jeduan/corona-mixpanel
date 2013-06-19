@@ -105,6 +105,7 @@ M.SERVER_URL = 'https://api.mixpanel.com'
 M.EVENT_DISTINCT_ID = nil
 M.listener = nil
 M.defaultProperties = {}
+M.superProperties = {}
 
 local function networkListener( event )
 	M.defaultProperties['$wifi'] = event.isReachableViaWiFi
@@ -197,6 +198,34 @@ local function _postEvent(event)
 	_postRequest( '/track/', postBody )
 end
 
+function M.registerSuperProperties( properties )
+	_extend(M.superProperties, properties)
+end
+
+function M.registerSuperPropertiesOnce( properties )
+	for key, val in pairs(properties) do
+		if M.superProperties[key] == nil then
+			M.superProperties[key] = value
+		end
+	end
+end
+
+function M.unregisterSuperProperty( property )
+	if M.superProperties[property] then
+		M.superProperties[property] = nil
+	end
+end
+
+function M.clearSuperProperties()
+	M.superProperties = {}
+end
+
+function M.reset()
+	M.distinctId = defaultDistinctId()
+	M.superProperties = {}
+	M.nameTag = nil
+end
+
 function M.track(...)
 	assert(M.API_TOKEN ~= nil, 'You need to call mixpanel.initMixpanel before tracking')
 
@@ -221,6 +250,7 @@ function M.track(...)
 	if M.nameTag then p.mp_name_tag = M.nameTag end
 	if M.distinctId then p.distinct_id = M.distinct_id end
 	_extend( p, M.defaultProperties )
+	_extend( p, M.superProperties )
 	local e = {
 		event = event,
 		properties = p,

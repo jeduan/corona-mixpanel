@@ -25,6 +25,43 @@ You need to ensure these properties exist in `build.settings`
 ```
 
 
+Super properties
+------
+
+It's very common to have certain properties that you want to include with each event you send. Generally, these are things you know about the user rather than about a specific event—for example, the user's age, gender, or source.
+
+To make things easier, you can register these properties as super properties. If you do, we will automatically include them with all tracked events. Super properties are saved to device storage, and will persist across invocations of your app.
+
+```lua
+local mixpanel = require 'mixpanel'
+mixpanel.registerSuperProperties({
+  ['Paid User'] = true
+})
+```
+
+Going forward, whenever you track an event, super properties will be included as properties. For instance, if you call
+
+```lua
+local mixpanel = require 'mixpanel'
+
+mixpanel.track('signup', {
+  'signup_button' = 'test12'
+})
+```
+
+after making the above call to registerSuperProperties:, it is just like adding the properties directly:
+
+```lua
+local mixpanel = require 'mixpanel'
+
+mixpanel.track('signup', {
+  'signup_button' = 'test12',
+  ['User Type'] = 'Paid',
+})
+```
+
+
+
  TODO:
  - Queue events in JSON
  - People API
