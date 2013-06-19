@@ -121,13 +121,12 @@ local function defaultPropertiesTable( )
 		['$os_version'] = system.getInfo('platformVersion'),
 		['$screen_height'] = display.pixelHeight,
 		['$screen_width'] = display.pixelWidth,
-		-- ['$app_version'] = 
 	}
 
 	if ret['$os'] == 'Android' then
 		ret['$os'] = 'android'
 		ret['$screen_dpi'] = system.getInfo('androidDisplayXDpi')
-		ret['$app_version'] = system.getInfo('androidAppVersoinCode')
+		ret['$app_version'] = system.getInfo('androidAppVersionCode')
 
 	elseif M.defaultProperties['$os'] == 'iPhone OS' then
 		ret['$manufacturer'] = 'Apple'
