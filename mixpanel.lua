@@ -19,6 +19,7 @@ local function _b64enc( data )
 	end) .. ( { '', '==', '=' } )[ #data %3 + 1] )
 end
 
+-- b64 decoding
 local function _b64dec( data )
 	-- character table string
 	local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
@@ -102,7 +103,6 @@ end
 M.API_TOKEN = nil
 M.SERVER_URL = 'https://api.mixpanel.com'
 M.EVENT_DISTINCT_ID = nil
-M.listener = nil
 M.defaultProperties = {}
 M.superProperties = {}
 
@@ -117,7 +117,6 @@ local function defaultPropertiesTable( )
 		lib_version = '1.0',
 		['$os'] = system.getInfo('platformName'),
 		['$model'] = system.getInfo('model'),
-		mp_device_model = system.getInfo('model'),
 		['$os_version'] = system.getInfo('platformVersion'),
 		['$screen_height'] = display.pixelHeight,
 		['$screen_width'] = display.pixelWidth,
@@ -191,7 +190,7 @@ local function _postRequest( endpoint, body )
 end
 
 local function _postEvent(event)
-	local postBody = 'ip=1&data=' .. encodeApiData(data)
+	local postBody = 'ip=1&data=' .. encodeApiData(event)
 	_postRequest( '/track/', postBody )
 end
 
@@ -248,6 +247,9 @@ function M.track(...)
 	if M.distinctId then p.distinct_id = M.distinct_id end
 	_extend( p, M.defaultProperties )
 	_extend( p, M.superProperties )
+	if properties then
+		_extend( p, properties )
+	end
 	local e = {
 		event = event,
 		properties = p,
