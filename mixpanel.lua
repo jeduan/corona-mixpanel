@@ -19,7 +19,6 @@ local function _b64enc( data )
 	end) .. ( { '', '==', '=' } )[ #data %3 + 1] )
 end
 
--- b64 decoding
 local function _b64dec( data )
 	-- character table string
 	local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
@@ -118,7 +117,7 @@ local function defaultPropertiesTable( )
 		lib_version = '1.0',
 		['$os'] = system.getInfo('platformName'),
 		['$model'] = system.getInfo('model'),
-		['mp_device_model'] = system.getInfo('model'),
+		mp_device_model = system.getInfo('model'),
 		['$os_version'] = system.getInfo('platformVersion'),
 		['$screen_height'] = display.pixelHeight,
 		['$screen_width'] = display.pixelWidth,
@@ -146,14 +145,10 @@ local function defaultDistinctId()
 	end
 end
 
-function M.initMixpanel( apiToken, listener )
+function M.initMixpanel( apiToken )
 	assert( type( apiToken ) == 'string' and apiToken ~= '', 'API Token not provided' )
 
 	M.API_TOKEN = apiToken
-	if nil ~= listener then
-		M.listener = listener
-	end
-
 	M.defaultProperties = defaultPropertiesTable()
 	M.distinctId = defaultDistinctId()
 
@@ -175,7 +170,7 @@ end
 
 local function postRequestListener( e )
 	if e.isError then
-		_log('error while sending data to mixpanel ', error)
+		_log('error while sending data to mixpanel ')
 	end
 	if e.status ~= 200 then
 		_log('error while sending data to mixpanel ')
