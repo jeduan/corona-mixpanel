@@ -1,5 +1,6 @@
 local json = require 'json'
 local mime = require 'mime'
+local log = require 'vendor.log.log'
 
 local M = {}
 
@@ -14,51 +15,6 @@ local function _urlencode( str )
 	end
 	return str
 end
-
-local function print_r ( t ) 
-	local print_r_cache={}
-	local function sub_print_r(t,indent)
-		if ( print_r_cache[ tostring(t) ] ) then
-			print( indent .. "*" .. tostring(t) )
-		else
-			print_r_cache[ tostring(t) ]=true
-			if (type(t)=="table") then
-				for pos,val in pairs(t) do
-					if (type(val)=="table") then
-						print(indent.."["..pos.."] => "..tostring(t).." {")
-						sub_print_r(val,indent..string.rep(" ",--[[string.len(pos)+]] 4 ))
-						print(indent..string.rep(" ",--[[string.len(pos)+6]] 4 ) .."}")
-					elseif (type(val)=="string") then
-						print(indent.."[".. tostring( pos ) ..'] => "'..val..'"')
-					else
-						print(indent.."[" .. tostring( pos ) .."] => "..tostring(val))
-					end
-				end
-			else
-				print(indent..tostring(t))
-			end
-		end
-	end
-	if (type(t)=="table") then
-		print(tostring(t).." {")
-		sub_print_r(t," ")
-		print("}")
-	else
-		sub_print_r(t," ")
-	end
-end
-
-local function _log( ... )
-	for i = 1,select('#', ...) do
-		local val = select(i, ...)
-		if type(val) == 'string' then
-			print(val)
-		else
-			print_r(val)
-		end
-	end
-end
-
 
 local function _extend( dest, src )
 	for k, val in pairs(src) do
@@ -135,10 +91,10 @@ end
 
 local function postRequestListener( e )
 	if e.isError then
-		_log('error while sending data to mixpanel ')
+		log('error while sending data to mixpanel ')
 	end
 	if e.status ~= 200 then
-		_log('error while sending data to mixpanel ')
+		log('error while sending data to mixpanel ')
 	end
 end
 
@@ -194,7 +150,7 @@ function M.track(...)
 	local event = nil
 	local properties = nil
 	if select('#', ...) == 0 then
-		_log(' mixpanel track called with empty event parameter. Using "mp_event"')
+		log(' mixpanel track called with empty event parameter. Using "mp_event"')
 		event = 'mp_event'
 	end
 

@@ -1,5 +1,8 @@
 {
   "name": "mixpanel",
   "version": "0.1.0",
-  "main": "mixpanel.lua"
+  "main": "mixpanel.lua",
+  "dependencies": {
+    "log": "~0.1.0"
+  }
 }
