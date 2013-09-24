@@ -1,2 +1,5 @@
 .DS_Store
 vendor
+build.settings
+config.lua
+main.lua
