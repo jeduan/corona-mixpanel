@@ -1,8 +1,15 @@
+corona-mixpanel
+========
 
 API for sending events to Mixpanel on Corona SDK
+
+Installation
 ------
 
-Usage:
+Either copy `mixpanel.lua` and `offlinequeue.lua`, `log.lua`, `fiber.lua` and `httptools.lua` to a directory or install via bower.
+
+Usage
+-------
 
 ```lua
 local mixpanel = require 'mixpanel'
@@ -15,13 +22,13 @@ mixpanel.track( 'clickedAd', {
 You need to ensure these properties exist in `build.settings`
 
 ```lua
-  android = {
-    usesPermissions = {
-      "android.permission.INTERNET",
-      "android.permission.READ_PHONE_STATE",
-      "android.permission.ACCESS_NETWORK_STATE",
-    },
-  }
+android = {
+  usesPermissions = {
+    "android.permission.INTERNET",
+    "android.permission.READ_PHONE_STATE",
+    "android.permission.ACCESS_NETWORK_STATE",
+  },
+}
 ```
 
 
@@ -62,5 +69,5 @@ mixpanel.track('signup', {
 
 
  TODO:
- - Queue events in JSON
+ - ~~Queue events in JSON~~
  - People API

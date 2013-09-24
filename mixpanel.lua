@@ -1,32 +1,24 @@
 local json = require 'json'
 local mime = require 'mime'
 local log = require 'vendor.log.log'
-
-local M = {}
+local httptools = require 'vendor.httptools.httptools'
+local offlinequeue = require 'vendor.offlinequeue.offlinequeue'
 
 -- Group: tools
-local function _urlencode( str )
-	if str then
-		str = string.gsub ( str, "\n", "\r\n" )
-		str = string.gsub ( str, "([^%w ])", function ( c )
-			return string.format ( "%%%02X", string.byte( c ) )
-		end )
-		str = string.gsub ( str, " ", "+" )
-	end
-	return str
-end
-
 local function _extend( dest, src )
 	for k, val in pairs(src) do
 		dest[k] = val
 	end
 end
 
-M.API_TOKEN = nil
-M.SERVER_URL = 'https://api.mixpanel.com'
-M.EVENT_DISTINCT_ID = nil
-M.defaultProperties = {}
-M.superProperties = {}
+local M = {
+	API_TOKEN = nil,
+	SERVER_URL = 'https://api.mixpanel.com',
+	EVENT_DISTINCT_ID = nil,
+	defaultProperties = {},
+	superProperties = {},
+	debug = false,
+}
 
 local function networkListener( event )
 	M.defaultProperties['$wifi'] = event.isReachableViaWiFi
@@ -66,12 +58,25 @@ local function defaultDistinctId()
 	end
 end
 
+local function process(e)
+	if e.status ~= 200 then
+		log('error', e)
+		return false
+	else
+		return true
+	end
+end
+
 function M.initMixpanel( apiToken )
 	assert( type( apiToken ) == 'string' and apiToken ~= '', 'API Token not provided' )
 
 	M.API_TOKEN = apiToken
 	M.defaultProperties = defaultPropertiesTable()
 	M.distinctId = defaultDistinctId()
+	M.queue = offlinequeue.newQueue{
+		onResult = process,
+		debug = M.debug
+	}
 
 	if network.canDetectNetworkStatusChanges then
 		network.setStatusListener( 'api.mixpanel.com', networkListener)
@@ -84,36 +89,24 @@ local function encodeApiData(data)
 
 	if jsonstring then
 		b64string = mime.b64( jsonstring )
-		b64string = _urlencode( b64string )
+		b64string = httptools.urlencode( b64string )
 	end
 	return b64string
 end
 
-local function postRequestListener( e )
-	if e.isError then
-		log('error while sending data to mixpanel ')
-	end
-	if e.status ~= 200 then
-		log('error while sending data to mixpanel ')
-	end
-end
-
-local function _postRequest( endpoint, body )
-	local url = M.SERVER_URL .. endpoint
-	local params = {
-		headers = {
-			['Accept-Encoding'] = 'gzip',
-			['Content-Type'] = 'application/x-www-form-urlencoded'
-		},
-		body = body
-	}
-
-	network.request( url, 'POST', postRequestListener, params )
-end
-
 local function _postEvent(event)
 	local postBody = 'ip=1&data=' .. encodeApiData(event)
-	_postRequest( '/track/', postBody )
+	M.queue:enqueue {
+		url = M.SERVER_URL .. '/track/',
+		method = 'POST',
+		params = {
+			headers = {
+				['Accept-Encoding'] = 'gzip',
+				['Content-Type'] = 'application/x-www-form-urlencoded'
+			},
+			body = postBody
+		}
+	}
 end
 
 function M.registerSuperProperties( properties )
@@ -150,7 +143,6 @@ function M.track(...)
 	local event = nil
 	local properties = nil
 	if select('#', ...) == 0 then
-		log(' mixpanel track called with empty event parameter. Using "mp_event"')
 		event = 'mp_event'
 	end
 
@@ -178,7 +170,5 @@ function M.track(...)
 	}
 	_postEvent(e)
 end
-
-
 
 return M
