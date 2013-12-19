@@ -67,16 +67,20 @@ local function process(e)
 	end
 end
 
-function M.initMixpanel( apiToken )
+function M.initMixpanel( apiToken, params )
 	assert( type( apiToken ) == 'string' and apiToken ~= '', 'API Token not provided' )
 
 	M.API_TOKEN = apiToken
 	M.defaultProperties = defaultPropertiesTable()
 	M.distinctId = defaultDistinctId()
-	M.queue = offlinequeue.newQueue{
-		onResult = process,
-		debug = M.debug
-	}
+	if params and params.queue then
+		M.queue = params.queue
+	else
+		M.queue = offlinequeue.newQueue{
+			onResult = process,
+			debug = M.debug
+		}
+	end
 
 	if network.canDetectNetworkStatusChanges then
 		network.setStatusListener( 'api.mixpanel.com', networkListener)

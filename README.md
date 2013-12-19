@@ -66,7 +66,19 @@ mixpanel.track('signup', {
 })
 ```
 
+### Advanced configuration
 
+You can use an existent offlinequeue instance when initing this module.
+
+To do that just pass a second params argument to `initMixpanel`
+
+```lua
+local mixpanel = require 'mixpanel'
+local offlinequeue = require 'offlinequeue'
+
+local queue = offlinequeue.newQueue(...)
+mixpanel.initMixpanel(MIXPANEL_TOKEN, {queue = queue})
+```
 
  TODO:
  - ~~Queue events in JSON~~
