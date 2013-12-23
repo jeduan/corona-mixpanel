@@ -6,7 +6,25 @@ API for sending events to Mixpanel on Corona SDK
 Installation
 ------
 
-Either copy `mixpanel.lua` and `offlinequeue.lua`, `log.lua`, `fiber.lua` and `httptools.lua` to a directory or install via bower.
+### Bower
+
+This package and its dependencies can be used as bower modules.
+
+To do that, just follow the instructions on [this gist](https://gist.github.com/jeduan/6163713)
+
+### Manual
+
+Copy to your game folder the following files
+
+  - [mixpanel.lua](https://raw.github.com/jeduan/corona-mixpanel/master/mixpanel.lua)
+  - [offlinequeue.lua](https://raw.github.com/jeduan/corona-offlinequeue/master/offlinequeue.lua)
+  - [log.lua](https://raw.github.com/jeduan/lua-log-tools/master/log.lua)
+  - [fiber.lua](https://raw.github.com/jeduan/lua-fiber/master/fiber.lua)
+  - [httptools.lua](https://github.com/jeduan/http-tools/blob/master/httptools.lua)
+
+And change accordingly `require` paths
+
+To have a drop-in replacement for Corona's analytics module, check out [corona-analytics-mixpanel](https://github.com/jeduan/corona-analytics-mixpanel)
 
 Usage
 -------

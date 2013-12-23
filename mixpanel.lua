@@ -58,15 +58,6 @@ local function defaultDistinctId()
 	end
 end
 
-local function process(e)
-	if e.status ~= 200 then
-		log('error', e)
-		return false
-	else
-		return true
-	end
-end
-
 function M.initMixpanel( apiToken, params )
 	assert( type( apiToken ) == 'string' and apiToken ~= '', 'API Token not provided' )
 
