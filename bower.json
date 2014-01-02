@@ -1,10 +1,10 @@
 {
   "name": "mixpanel",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "mixpanel.lua",
   "dependencies": {
     "log": "~0.1.0",
     "httptools": "~0.1.1",
-    "offlinequeue": ">= 0.5"
+    "offlinequeue": ">= 0.5.1"
   }
 }
