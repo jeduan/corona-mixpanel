@@ -14,13 +14,7 @@ To do that, just follow the instructions on [this gist](https://gist.github.com/
 
 ### Manual
 
-Copy to your game folder the following files
-
-  - [mixpanel.lua](https://raw.github.com/jeduan/corona-mixpanel/master/mixpanel.lua)
-  - [offlinequeue.lua](https://raw.github.com/jeduan/corona-offlinequeue/master/offlinequeue.lua)
-  - [log.lua](https://raw.github.com/jeduan/lua-log-tools/master/log.lua)
-  - [fiber.lua](https://raw.github.com/jeduan/lua-fiber/master/fiber.lua)
-  - [httptools.lua](https://github.com/jeduan/http-tools/blob/master/httptools.lua)
+Download the latest release from the [Releases tab](https://github.com/jeduan/corona-mixpanel/releases)
 
 And change accordingly `require` paths
 
